@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homepage</title>
+</head>
+<body>
+    <h1>Welcome to the Car Rental System</h1>
+    <ul>
+        <li><a href="{% url 'vehicle_list' %}">Rent</a></li>
+        <li><a href="{% url 'list_page' %}">List</a></li>
+        <li><a href="/accounts/login/">Login</a></li> <!-- Assumes default login URL -->
+    </ul>
+</body>
+</html>
