@@ -1,0 +1,14 @@
+<h1>Available Vehicles</h1>
+<ul>
+    {% for vehicle in vehicles %}
+    <li>
+        <strong>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</strong><br>
+        Daily Rate: ${{ vehicle.dailyrate }}<br>
+        {% if vehicle.isavailable %}
+        <a href="{% url 'reserve_vehicle' vehicle.vehicleid %}">Reserve</a>
+        {% else %}
+        Not Available
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
