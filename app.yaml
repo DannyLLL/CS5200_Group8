@@ -1,0 +1,8 @@
+runtime: python3.9
+entrypoint: gunicorn -b :$PORT dbtest.wsgi:application
+
+handlers:
+- url: /static
+  static_dir: static
+- url: /.*
+  script: auto
