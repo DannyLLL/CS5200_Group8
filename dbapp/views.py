@@ -8,8 +8,16 @@ from .models import Vehicles, Reservations
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
 
+def homepage(request):
+    return render(request, 'dbapp/homepage.html')
+
 def test_view(request):
     return render(request, 'vehicle_list.html')
+
+# Listing view
+def list_page(request):
+    return render(request, 'list_page.html')
+
 
 def vehicle_list(request):
     try:
