@@ -209,7 +209,7 @@ def list_car(request):
             image=image
         )
         
-        return redirect('listing_rental_car')  # Redirect to the vehicle list page after listing
+        return redirect('manage_car')  # Redirect to the vehicle list page after listing
     
     return render(request, 'dbapp/listing_rental_car.html')
 
