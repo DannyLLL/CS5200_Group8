@@ -7,6 +7,11 @@ from django.urls import reverse_lazy
 from .models import Vehicles, Reservations
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Vehicles, Reservations, Users
+from django.core.paginator import Paginator
+
 
 def homepage(request):
     return render(request, 'dbapp/homepage.html')
@@ -20,17 +25,11 @@ def list_page(request):
 
 
 def vehicle_list(request):
-    try:
-        # Debug template loading
-        template = get_template('dbapp/vehicle_list.html')  # Adjust based on path
-        print("Template found:", template)
-    except TemplateDoesNotExist as e:
-        print("Template lookup failed:", e)
-
-    vehicles = Vehicles.objects.filter(isavailable=True)
-    return render(request, 'dbapp/vehicle_list.html', {'vehicles': vehicles})
-
-
+    vehicles = Vehicles.objects.filter(isavailable=True).order_by('-year')
+    paginator = Paginator(vehicles, 9)  # Show 9 vehicles per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'dbapp/vehicle_list.html', {'vehicles': page_obj})
 
 def testmysql(request):
     """
