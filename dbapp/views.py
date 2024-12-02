@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-# Create your views here. 
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView 
 from django.db import connection 
@@ -15,7 +14,41 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib import messages
 
+
+
+
+def is_admin(user):
+    return user.is_superuser
+
+@user_passes_test(is_admin)
+def add_vehicle(request):
+    if request.method == 'POST':
+        # Get form data
+        vehicle = Vehicles.objects.create(
+            ownerid_id=request.POST['owner_id'],
+            make=request.POST['make'],
+            model=request.POST['model'],
+            year=request.POST['year'],
+            dailyrate=request.POST['dailyrate'],
+            location=request.POST['location'],
+            isavailable=True
+        )
+        return redirect('list_page')
+    return render(request, 'dbapp/add_vehicle.html')
+
+@user_passes_test(is_admin)
+def delete_vehicle(request, vehicle_id):
+    if request.method == 'POST':
+        vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
+        vehicle.delete()
+    return redirect('list_page')
+
+def list_page(request):
+    vehicles = Vehicles.objects.filter(isavailable=True)
+    return render(request, 'dbapp/list_page.html', {'vehicles': vehicles})
 
 def login_view(request):
     if request.method == 'POST':
@@ -66,9 +99,7 @@ def homepage(request):
 def test_view(request):
     return render(request, 'vehicle_list.html')
 
-# Listing view
-def list_page(request):
-    return render(request, 'list_page.html')
+
 
 
 def vehicle_list(request):
