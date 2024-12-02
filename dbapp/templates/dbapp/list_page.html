@@ -1,10 +1,49 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-    <title>List Your Vehicle</title>
-</head>
-<body>
-    <h1>List Your Vehicle</h1>
-    <p>Here, users can add their vehicles for rent.</p>
-</body>
+  <head>
+    <title>Car Listings</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-8">Available Vehicles</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for vehicle in vehicles %}
+        <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-xl font-semibold mb-2">
+            {{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }}
+          </h2>
+          <p class="text-gray-600 mb-2">Location: {{ vehicle.location }}</p>
+          <p class="text-lg font-bold text-blue-600 mb-4">
+            ${{ vehicle.dailyrate }}/day
+          </p>
+          <div class="text-gray-600 mb-4">
+            <p>Vehicle ID: {{ vehicle.vehicleid }}</p>
+            <p>Owner: {{ vehicle.ownerid.username }}</p>
+            {% if vehicle.isavailable %}
+            <p class="text-green-600">Available</p>
+            {% else %}
+            <p class="text-red-600">Not Available</p>
+            {% endif %}
+          </div>
+          <a
+            href="{% url 'reserve_vehicle' vehicle.vehicleid %}"
+            class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Reserve Now
+          </a>
+        </div>
+        {% empty %}
+        <p class="text-gray-600 col-span-3 text-center py-8">
+          No vehicles available at the moment.
+        </p>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
 </html>

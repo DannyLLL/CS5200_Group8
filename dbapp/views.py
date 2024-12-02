@@ -17,6 +17,12 @@ from django.utils import timezone
 from django.contrib.auth import logout
 
 
+
+
+def list_page(request):
+    vehicles = Vehicles.objects.filter(isavailable=True)
+    return render(request, 'dbapp/list_page.html', {'vehicles': vehicles})
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -66,9 +72,7 @@ def homepage(request):
 def test_view(request):
     return render(request, 'vehicle_list.html')
 
-# Listing view
-def list_page(request):
-    return render(request, 'list_page.html')
+
 
 
 def vehicle_list(request):
