@@ -12,6 +12,37 @@ from django.utils import timezone
 from django.contrib import messages
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
+from .models import UserProfile
+
+# edit profile page
+@login_required
+def profile_view(request):
+    # Get or create UserProfile for the logged-in user
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        # Extract the fields manually from the request.POST dictionary
+        user_profile.first_name = request.POST.get('first_name', user_profile.first_name)
+        user_profile.last_name = request.POST.get('last_name', user_profile.last_name)
+        user_profile.phone_number = request.POST.get('phone_number', user_profile.phone_number)
+        user_profile.address = request.POST.get('address', user_profile.address)
+
+        # Save the updated profile
+        user_profile.save()
+
+        # Show success message
+        messages.success(request, 'Your profile has been updated successfully.')
+        return redirect('profile')
+    else:
+        # Prepare the profile data for pre-filling the fields in the HTML template
+        context = {
+            'first_name': user_profile.first_name,
+            'last_name': user_profile.last_name,
+            'phone_number': user_profile.phone_number,
+            'address': user_profile.address,
+        }
+
+    return render(request, 'dbapp/profile.html', context)
 
 def is_admin(user):
     return user.is_superuser
@@ -51,7 +82,7 @@ def register_view(request):
             # Save the user
             user = form.save()
             # Create a UserProfile linked to the new user
-            UserProfile.objects.create(user=user, usertype='Renter', dateregistered=timezone.now())
+            UserProfile.objects.create(user=user, dateregistered=timezone.now())
             # Log in the user
             login(request, user)
             # Show success message

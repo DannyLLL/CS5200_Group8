@@ -124,7 +124,7 @@ class ReviewAdmin(admin.ModelAdmin):
 # Register remaining models
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'usertype', 'dateregistered')
+    list_display = ('user', 'first_name', 'last_name', 'phone_number', 'dateregistered')
 
 admin.site.register(CarDelivery)
 admin.site.register(VehicleFeatures)

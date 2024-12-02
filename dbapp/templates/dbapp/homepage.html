@@ -85,28 +85,36 @@
 
 <!-- Login Card -->
 <div class="bg-white rounded-lg shadow-sm p-6 border">
-    <h2 class="text-xl font-semibold mb-2">Account Access</h2>
-    {% if user.is_authenticated %}
-        <p class="text-gray-600 mb-4">
-            Welcome back, {{ user.username }}!
-        </p>
-        <a 
-            href="{% url 'logout' %}"
-            class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-        >
-            Logout
-        </a>
-    {% else %}
-        <p class="text-gray-600 mb-4">
-            Login to manage your reservations and profile
-        </p>
-        <a 
-            href="{% url 'login' %}"
-            class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-        >
-            Login / Register
-        </a>
-    {% endif %}
+  <h2 class="text-xl font-semibold mb-2">Account Access</h2>
+  {% if user.is_authenticated %}
+      <p class="text-gray-600 mb-4">
+          Welcome back, {{ user.username }}!
+      </p>
+      <!-- Profile Button -->
+      <a 
+          href="{% url 'profile' %}"
+          class="inline-block w-full text-center px-4 py-2 mb-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+      >
+          Profile
+      </a>
+      <!-- Logout Button -->
+      <a 
+          href="{% url 'logout' %}"
+          class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+      >
+          Logout
+      </a>
+  {% else %}
+      <p class="text-gray-600 mb-4">
+          Login to manage your reservations and profile
+      </p>
+      <a 
+          href="{% url 'login' %}"
+          class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+      >
+          Login / Register
+      </a>
+  {% endif %}
 </div>
 
     <!-- Footer -->
