@@ -27,6 +27,7 @@ urlpatterns = [
     path('vehicle/add/', views.add_vehicle, name='add_vehicle'), #add vehicle
     path('vehicle/delete/<int:vehicle_id>/', views.delete_vehicle, name='delete_vehicle'), #delete vehicle
     path('list_car/', views.list_car, name='listing_rental_car'),  # Use the correct name
+    path('manage_car/', views.manage_car, name='manage_car'),
 ]
 
 if settings.DEBUG:

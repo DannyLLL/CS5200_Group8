@@ -184,7 +184,7 @@ def reservation_list(request, renter_id):
     return render(request, 'reservation_list.html', {'reservations': reservations})
 
 # Listing car for rent
-@login_required
+#@login_required
 def list_car(request):
     if not request.user.is_authenticated:
         return redirect('login') 
@@ -213,3 +213,16 @@ def list_car(request):
     
     return render(request, 'dbapp/listing_rental_car.html')
 
+def manage_car(request):
+    """
+    View to display the car management page.
+    """
+    if not request.user.is_authenticated:
+        # Redirect to login if the user is not authenticated
+        return redirect('login')  
+    
+    # Fetch all cars (or filter based on user if necessary)
+    cars = Vehicles.objects.filter(ownerid=request.user)
+
+    # Render the template and pass the list of cars as context
+    return render(request, 'dbapp/manage_car.html', {'list_page': cars})
