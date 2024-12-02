@@ -1,14 +1,59 @@
-<h1>Available Vehicles</h1>
-<ul>
-    {% for vehicle in vehicles %}
-    <li>
-        <strong>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</strong><br>
-        Daily Rate: ${{ vehicle.dailyrate }}<br>
-        {% if vehicle.isavailable %}
-        <a href="{% url 'reserve_vehicle' vehicle.vehicleid %}">Reserve</a>
-        {% else %}
-        Not Available
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Available Vehicles</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-8">Available Vehicles</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for vehicle in vehicles %}
+        <div class="bg-white rounded-lg shadow-sm border p-6">
+          <h2 class="text-xl font-semibold mb-2">
+            {{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }}
+          </h2>
+          <p class="text-gray-600 mb-2">Location: {{ vehicle.location }}</p>
+          <p class="text-lg font-bold text-blue-600 mb-4">
+            ${{ vehicle.dailyrate }}/day
+          </p>
+          <a
+            href="{% url 'reserve_vehicle' vehicle.vehicleid %}"
+            class="inline-block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Reserve Now
+          </a>
+        </div>
+        {% empty %}
+        <p class="text-gray-600">No vehicles available at the moment.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if vehicles.has_other_pages %}
+      <div class="flex justify-center mt-8">
+        <div class="flex space-x-2">
+          {% if vehicles.has_previous %}
+          <a
+            href="?page={{ vehicles.previous_page_number }}"
+            class="px-4 py-2 border rounded hover:bg-gray-50"
+            >Previous</a
+          >
+          {% endif %} {% if vehicles.has_next %}
+          <a
+            href="?page={{ vehicles.next_page_number }}"
+            class="px-4 py-2 border rounded hover:bg-gray-50"
+            >Next</a
+          >
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
