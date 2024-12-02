@@ -136,24 +136,43 @@ def reserve_vehicle(request, vehicle_id):
     """
     View for reserving a vehicle.
     """
-    vehicle = get_object_or_404(Vehicles, pk=vehicle_id)  # Fetch vehicle
+
+    vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
+    # Fetch existing reservations for this vehicle
+    reservations = Reservations.objects.filter(vehicleid=vehicle).order_by('startdate')
 
     if request.method == 'POST':
-        # Create a reservation
-        renter = User.objects.get(pk=request.POST['renter_id'])
+        renter_id = request.POST['renter_id']
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+
+        # Check for overlapping reservations
+        overlapping_reservations = reservations.filter(
+            Q(startdate__lte=end_date, enddate__gte=start_date)
+        )
+        if overlapping_reservations.exists():
+            return render(request, 'reserve_vehicle.html', {
+                'vehicle': vehicle,
+                'reservations': reservations,
+                'error': 'This vehicle is not available for the selected dates.'
+            })
+
+        # Create the reservation
+        renter = get_object_or_404(Renter, id=renter_id)
         Reservations.objects.create(
             vehicleid=vehicle,
             renterid=renter,
-            startdate=request.POST['start_date'],
-            enddate=request.POST['end_date'],
-            reservationstatus='Pending'
-        )
-        # Update vehicle availability
-        vehicle.isavailable = False
-        vehicle.save()
-        return render(request, 'success.html', {'vehicle': vehicle})
+            startdate=start_date,
+            enddate=end_date,
+            reservationstatus='Pending'  # Example default status
 
-    return render(request, 'reserve_vehicle.html', {'vehicle': vehicle})
+
+        )
+        return redirect('vehicle_list') 
+
+    return render(request, 'dbapp/reserve_vehicle.html', {'vehicle': vehicle})
+
+
 
 def reservation_list(request, renter_id):
     """
@@ -161,3 +180,27 @@ def reservation_list(request, renter_id):
     """
     reservations = Reservations.objects.filter(renterid_id=renter_id)
     return render(request, 'reservation_list.html', {'reservations': reservations})
+
+# Listing car for rent
+def list_car(request):
+    if request.method == 'POST':
+        make = request.POST['make']
+        model = request.POST['model']
+        year = request.POST['year']
+        price = request.POST['price']
+        location = request.POST['location']
+        
+        # Save the car information
+        Vehicles.objects.create(
+            make=make,
+            model=model,
+            year=year,
+            dailyrate=price,
+            location=location,
+            isavailable=1  # Set car availability to true
+        )
+        return redirect('listing_rental_car')  # Redirect to the vehicle list page after listing
+    
+    return render(request, 'dbapp/listing_rental_car.html')
+  # Use the correct file name
+

@@ -1,11 +1,124 @@
-<h1>Reserve {{ vehicle.make }} {{ vehicle.model }}</h1>
-<form method="post">
-    {% csrf_token %}
-    <label>Renter ID:</label>
-    <input type="text" name="renter_id" required><br>
-    <label>Start Date:</label>
-    <input type="date" name="start_date" required><br>
-    <label>End Date:</label>
-    <input type="date" name="end_date" required><br>
-    <button type="submit">Reserve</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Reserve Vehicle</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-gray-50 min-h-screen flex items-center justify-center"
+  >
+    <div class="absolute top-4 left-4">
+      <a
+        href="{% url 'homepage' %}"
+        class="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
+      >
+        ← Back to Home
+      </a>
+    </div>
+    <div
+      class="bg-white shadow-md rounded-lg p-6 max-w-lg w-full"
+    >
+      <!-- Vehicle Information -->
+      <h1 class="text-2xl font-bold mb-4">
+        Reserve {{ vehicle.make }} {{ vehicle.model }}
+      </h1>
+
+      <!-- Available Dates -->
+      <p class="text-lg font-semibold mb-2">
+        Unavailable Dates:
+      </p>
+      <ul class="list-disc list-inside text-gray-700 mb-4">
+        {% for reservation in reservations %}
+        <li>
+          Reserved from
+          <span class="font-semibold"
+            >{{ reservation.start_date }}</span
+          >
+          to
+          <span class="font-semibold"
+            >{{ reservation.end_date }}</span
+          >
+        </li>
+        {% empty %}
+        <li>No current reservations.</li>
+        {% endfor %}
+      </ul>
+
+      <!-- Reservation Form -->
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <!-- Renter ID -->
+        <div>
+          <label
+            for="renter_id"
+            class="block text-sm font-medium text-gray-700"
+            >Renter ID:</label
+          >
+          <input
+            type="text"
+            id="renter_id"
+            name="renter_id"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Start Date -->
+        <div>
+          <label
+            for="start_date"
+            class="block text-sm font-medium text-gray-700"
+            >Start Date:</label
+          >
+          <input
+            type="date"
+            id="start_date"
+            name="start_date"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- End Date -->
+        <div>
+          <label
+            for="end_date"
+            class="block text-sm font-medium text-gray-700"
+            >End Date:</label
+          >
+          <input
+            type="date"
+            id="end_date"
+            name="end_date"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Reserve
+          </button>
+        </div>
+      </form>
+
+      <!-- Error Message -->
+      {% if error %}
+      <p class="text-red-500 mt-4">{{ error }}</p>
+      {% endif %}
+    </div>
+  </body>
+</html>
