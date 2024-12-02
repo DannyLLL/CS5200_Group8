@@ -122,23 +122,40 @@ def reserve_vehicle(request, vehicle_id):
     Placeholder View for reserving a vehicle.
     This will allow users to reserve a specific vehicle once migrations are complete.
     """
-    vehicle = get_object_or_404(Vehicles, pk=vehicle_id)  # This line will only work after migrations
+    vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
+    # Fetch existing reservations for this vehicle
+    reservations = Reservations.objects.filter(vehicleid=vehicle).order_by('startdate')
 
     if request.method == 'POST':
-        # Create a reservation (will only work after migrations)
+        renter_id = request.POST['renter_id']
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+
+        # Check for overlapping reservations
+        overlapping_reservations = reservations.filter(
+            Q(startdate__lte=end_date, enddate__gte=start_date)
+        )
+        if overlapping_reservations.exists():
+            return render(request, 'reserve_vehicle.html', {
+                'vehicle': vehicle,
+                'reservations': reservations,
+                'error': 'This vehicle is not available for the selected dates.'
+            })
+
+        # Create the reservation
+        renter = get_object_or_404(Renter, id=renter_id)
         Reservations.objects.create(
             vehicleid=vehicle,
-            renterid_id=request.POST['renter_id'],
-            startdate=request.POST['start_date'],
-            enddate=request.POST['end_date'],
-            reservationstatus='Pending'
+            renterid=renter,
+            startdate=start_date,
+            enddate=end_date,
+            reservationstatus='Pending'  # Example default status
         )
-        # Update vehicle availability
-        vehicle.isavailable = False
-        vehicle.save()
-        return render(request, 'success.html', {'vehicle': vehicle})
+        return redirect('vehicle_list') 
 
-    return render(request, 'reserve_vehicle.html', {'vehicle': vehicle})
+    return render(request, 'dbapp/reserve_vehicle.html', {'vehicle': vehicle})
+
+
 
 # Optional Reservation List View
 def reservation_list(request, renter_id):
