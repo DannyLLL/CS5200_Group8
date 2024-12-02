@@ -12,7 +12,8 @@ from django.utils import timezone
 from django.contrib import messages
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
-from .models import UserProfile
+from django.db.models import Q
+
 
 # edit profile page
 @login_required
@@ -71,7 +72,7 @@ def delete_vehicle(request, vehicle_id):
     return redirect('list_page')
 
 def list_page(request):
-    vehicles = Vehicles.objects.filter(isavailable=True)
+    vehicles = Vehicles.objects.all()
     return render(request, 'dbapp/list_page.html', {'vehicles': vehicles})
 
 @csrf_exempt
@@ -144,7 +145,6 @@ def reserve_vehicle(request, vehicle_id):
     reservations = Reservations.objects.filter(vehicleid=vehicle).order_by('startdate')
 
     if request.method == 'POST':
-        renter_id = request.POST['renter_id']
         start_date = request.POST['start_date']
         end_date = request.POST['end_date']
 
@@ -153,26 +153,26 @@ def reserve_vehicle(request, vehicle_id):
             Q(startdate__lte=end_date, enddate__gte=start_date)
         )
         if overlapping_reservations.exists():
-            return render(request, 'reserve_vehicle.html', {
+            return render(request, 'dbapp/reserve_vehicle.html', {
                 'vehicle': vehicle,
                 'reservations': reservations,
                 'error': 'This vehicle is not available for the selected dates.'
             })
 
         # Create the reservation
-        renter = get_object_or_404(Renter, id=renter_id)
         Reservations.objects.create(
             vehicleid=vehicle,
-            renterid=renter,
+            renterid=request.user,
             startdate=start_date,
             enddate=end_date,
-            reservationstatus='Pending'  # Example default status
-
-
+            reservationstatus='Pending'  #  default status
         )
-        return redirect('vehicle_list') 
 
-    return render(request, 'dbapp/reserve_vehicle.html', {'vehicle': vehicle})
+
+        
+        return redirect('list_page') 
+
+    return render(request, 'dbapp/reserve_vehicle.html', {'vehicle': vehicle, 'reservations': reservations})
 
 
 
@@ -184,7 +184,6 @@ def reservation_list(request, renter_id):
     return render(request, 'reservation_list.html', {'reservations': reservations})
 
 # Listing car for rent
-@login_required
 def list_car(request):
     if not request.user.is_authenticated:
         return redirect('login') 
