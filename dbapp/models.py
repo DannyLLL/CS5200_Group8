@@ -82,13 +82,14 @@ class VehicleFeatures(models.Model):
 
 class Vehicles(models.Model):
     vehicleid = models.AutoField(db_column='VehicleID', primary_key=True)
-    ownerid = models.ForeignKey(User, on_delete=models.CASCADE, db_column='OwnerID', blank=True, null=True)  # Make nullable
+    ownerid = models.ForeignKey(User, on_delete=models.CASCADE, db_column='OwnerID', blank=True, null=True)
     make = models.CharField(db_column='Make', max_length=50)
     model = models.CharField(db_column='Model', max_length=50)
     year = models.IntegerField(db_column='Year')
     dailyrate = models.DecimalField(db_column='DailyRate', max_digits=10, decimal_places=2)
     location = models.CharField(db_column='Location', max_length=100)
     isavailable = models.IntegerField(db_column='IsAvailable', blank=True, null=True)
-
+    image = models.FileField(upload_to='vehicle_images/', blank=True, null=True)  
+    
     class Meta:
         db_table = 'Vehicles'

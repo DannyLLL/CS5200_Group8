@@ -1,6 +1,9 @@
 from django.urls import path
 from . import views
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
 
     path('', views.homepage, name='homepage'),  # Homepage
@@ -25,3 +28,6 @@ urlpatterns = [
     path('vehicle/delete/<int:vehicle_id>/', views.delete_vehicle, name='delete_vehicle'), #delete vehicle
     path('list_car/', views.list_car, name='listing_rental_car'),  # Use the correct name
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
