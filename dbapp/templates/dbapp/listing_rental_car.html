@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>List a Car for Rent</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-gray-50 min-h-screen flex items-center justify-center"
+  >
+    <div class="absolute top-4 left-4">
+      <a
+        href="{% url 'homepage' %}"
+        class="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
+      >
+        ← Back to Home
+      </a>
+    </div>
+    <div
+      class="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full"
+    >
+      <h1 class="text-2xl font-bold mb-6 text-center">
+        List Your Car for Rent
+      </h1>
+
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <!-- Make -->
+        <div>
+          <label
+            for="make"
+            class="block text-sm font-medium text-gray-700"
+            >Make:</label
+          >
+          <input
+            type="text"
+            id="make"
+            name="make"
+            placeholder="e.g., Tesla"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Model -->
+        <div>
+          <label
+            for="model"
+            class="block text-sm font-medium text-gray-700"
+            >Model:</label
+          >
+          <input
+            type="text"
+            id="model"
+            name="model"
+            placeholder="e.g., Model 3"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Year -->
+        <div>
+          <label
+            for="year"
+            class="block text-sm font-medium text-gray-700"
+            >Year:</label
+          >
+          <input
+            type="number"
+            id="year"
+            name="year"
+            placeholder="e.g., 2022"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Daily Rate -->
+        <div>
+          <label
+            for="price"
+            class="block text-sm font-medium text-gray-700"
+            >Daily Rate (in $):</label
+          >
+          <input
+            type="number"
+            id="price"
+            name="price"
+            placeholder="e.g., 150"
+            step="0.01"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Location -->
+        <div>
+          <label
+            for="location"
+            class="block text-sm font-medium text-gray-700"
+            >Location:</label
+          >
+          <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="e.g., New York, NY"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Image Upload -->
+        <div>
+          <label
+            for="image"
+            class="block text-sm font-medium text-gray-700"
+            >Car Image:</label
+          >
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            required
+            class="mt-1 block w-full text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            List My Car
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

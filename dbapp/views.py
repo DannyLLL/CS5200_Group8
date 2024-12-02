@@ -164,3 +164,27 @@ def reservation_list(request, renter_id):
     """
     reservations = Reservations.objects.filter(renterid_id=renter_id)
     return render(request, 'reservation_list.html', {'reservations': reservations})
+
+# Listing car for rent
+def list_car(request):
+    if request.method == 'POST':
+        make = request.POST['make']
+        model = request.POST['model']
+        year = request.POST['year']
+        price = request.POST['price']
+        location = request.POST['location']
+        
+        # Save the car information
+        Vehicles.objects.create(
+            make=make,
+            model=model,
+            year=year,
+            dailyrate=price,
+            location=location,
+            isavailable=1  # Set car availability to true
+        )
+        return redirect('listing_rental_car')  # Redirect to the vehicle list page after listing
+    
+    return render(request, 'dbapp/listing_rental_car.html')
+  # Use the correct file name
+
