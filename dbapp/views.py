@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here. 
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView 
@@ -11,6 +11,53 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Vehicles, Reservations, Users
 from django.core.paginator import Paginator
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.utils import timezone
+from django.contrib.auth import logout
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('homepage')
+        else:
+            # Add error message handling here
+            return render(request, 'dbapp/login.html', {'error': 'Invalid credentials'})
+    return render(request, 'dbapp/login.html')
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('homepage')
+
+
+def register_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password1']
+        password2 = request.POST['password2']
+        
+        if password != password2:
+            return render(request, 'dbapp/register.html', {'error': 'Passwords do not match'})
+            
+        # Create user in your Users table
+        user = Users.objects.create(
+            username=username,
+            email=email,
+            passwordhash=password,  # In production, you should hash this password
+            usertype='Renter',
+            dateregistered=timezone.now()
+        )
+        
+        return redirect('login')
+    return render(request, 'dbapp/register.html')
+
 
 
 def homepage(request):

@@ -12,5 +12,9 @@ urlpatterns = [
 
     path('reserve/<int:vehicle_id>/', views.reserve_vehicle, name='reserve_vehicle'),  # Reserve a vehicle
     path('reservations/<int:renter_id>/', views.reservation_list, name='reservation_list'),  # List renter's reservations
-        path('testmysql/', views.testmysql, name='testmysql'),  # Test database connection
+    path('testmysql/', views.testmysql, name='testmysql'),  # Test database connection
+
+    path('login/', views.login_view, name='login'), #login page
+    path('logout/', views.logout_view, name='logout'), #logout page
+    path('register/', views.register_view, name='register'), #register page
 ]
