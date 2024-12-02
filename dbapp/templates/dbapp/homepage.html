@@ -3,29 +3,32 @@
 <html>
   <head>
     <title>Car Rental System</title>
-    
+
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
   </head>
-   
+
   <body class="min-h-screen bg-slate-50">
     <!-- Hero Section -->
     <div class="bg-white border-b">
-       <!-- Background Image -->
-        <!-- <div class="absolute inset-0 z-0 overflow-hidden">
+      <!-- Background Image -->
+      <!-- <div class="absolute inset-0 z-0 overflow-hidden">
             <img src="{% static 'dbapp/images/homepage1.jpg' %}" 
                  alt="Luxury car background" 
                  class="w-full h-full object-cover opacity-30">
         </div> -->
       <div class="max-w-7xl mx-auto px-4 py-6">
         <div class="text-center py-16">
-          <h1 class="text-4xl font-bold text-slate-900 mb-4">
+          <h1
+            class="text-4xl font-bold text-slate-900 mb-4"
+          >
             Welcome to the Car Rental System
           </h1>
           <p class="text-xl text-slate-600 mb-8">
-            Find and rent the perfect car for your next journey
+            Find and rent the perfect car for your next
+            journey
           </p>
           <div class="flex justify-center gap-4">
             <a
@@ -47,75 +50,93 @@
 
     <!-- Features Section -->
     <div class="max-w-7xl mx-auto px-4 py-12">
-        <!-- Second Image as a banner -->
-        <div class="mb-12 rounded-lg overflow-hidden shadow-lg">
-            <img src="{% static 'dbapp/images/homepage2.jpg' %}" 
-                 alt="Featured cars" 
-                 class="w-full h-64 object-cover">
-        </div>
-      {% comment %} <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Rent Card -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border">
-          <h2 class="text-xl font-semibold mb-2">Rent a Car</h2>
-          <p class="text-gray-600 mb-4">
-            Browse our selection of vehicles and find the perfect car for your
-            needs
-          </p>
-          <a
-            href="{% url 'vehicle_list' %}"
-            class="inline-block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            View Available Cars
-          </a>
-        </div> {% endcomment %}
+      <!-- Second Image as a banner -->
+      <div
+        class="mb-12 rounded-lg overflow-hidden shadow-lg"
+      >
+        <img
+          src="{% static 'dbapp/images/homepage2.jpg' %}"
+          alt="Featured cars"
+          class="w-full h-64 object-cover"
+        />
+      </div>
 
-        <!-- List Card -->
-        {% comment %} <div class="bg-white rounded-lg shadow-sm p-6 border">
-          <h2 class="text-xl font-semibold mb-2">View Listings</h2>
+      <div class="flex flex-wrap justify-between gap-6">
+        <!-- Manage My Car -->
+        <div
+          class="bg-white rounded-lg shadow-sm p-6 border flex-1 min-w-[300px]"
+        >
+          <h2 class="text-xl font-semibold mb-2">
+            Manage My Car
+          </h2>
           <p class="text-gray-600 mb-4">
-            See all available cars with detailed information and pricing
+            Add or edit your car listings for rentals.
           </p>
           <a
             href="{% url 'list_page' %}"
             class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
           >
-            Browse Listings
+            Go to My Cars
           </a>
-        </div> {% endcomment %}
+        </div>
 
-<!-- Login Card -->
-<div class="bg-white rounded-lg shadow-sm p-6 border">
-  <h2 class="text-xl font-semibold mb-2">Account Access</h2>
-  {% if user.is_authenticated %}
-      <p class="text-gray-600 mb-4">
-          Welcome back, {{ user.username }}!
-      </p>
-      <!-- Profile Button -->
-      <a 
-          href="{% url 'profile' %}"
-          class="inline-block w-full text-center px-4 py-2 mb-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-      >
-          Profile
-      </a>
-      <!-- Logout Button -->
-      <a 
-          href="{% url 'logout' %}"
-          class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-      >
-          Logout
-      </a>
-  {% else %}
-      <p class="text-gray-600 mb-4">
-          Login to manage your reservations and profile
-      </p>
-      <a 
-          href="{% url 'login' %}"
-          class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-      >
-          Login / Register
-      </a>
-  {% endif %}
-</div>
+        <!-- My Reservation -->
+        <div
+          class="bg-white rounded-lg shadow-sm p-6 border flex-1 min-w-[300px]"
+        >
+          <h2 class="text-xl font-semibold mb-2">
+            My Reservation
+          </h2>
+          <p class="text-gray-600 mb-4">
+            View or manage your upcoming reservations.
+          </p>
+          <a
+            href="{% url 'list_page' %}"
+            class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          >
+            View Reservations
+          </a>
+        </div>
+
+        <!-- Account Access -->
+        <div
+          class="bg-white rounded-lg shadow-sm p-6 border flex-1 min-w-[300px]"
+        >
+          <h2 class="text-xl font-semibold mb-2">
+            Account Access
+          </h2>
+          {% if user.is_authenticated %}
+          <p class="text-gray-600 mb-4">
+            Welcome back, {{ user.username }}!
+          </p>
+          <!-- Profile Button -->
+          <a
+            href="{% url 'profile' %}"
+            class="inline-block w-full text-center px-4 py-2 mb-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          >
+            Profile
+          </a>
+          <!-- Logout Button -->
+          <a
+            href="{% url 'logout' %}"
+            class="inline-block w-full text-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            Logout
+          </a>
+          {% else %}
+          <p class="text-gray-600 mb-4">
+            Login to manage your reservations and profile
+          </p>
+          <a
+            href="{% url 'login' %}"
+            class="inline-block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          >
+            Login / Register
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-white border-t mt-12">

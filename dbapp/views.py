@@ -32,7 +32,7 @@ def profile_view(request):
 
         # Show success message
         messages.success(request, 'Your profile has been updated successfully.')
-        return redirect('profile')
+        return redirect('homepage')
     else:
         # Prepare the profile data for pre-filling the fields in the HTML template
         context = {
@@ -88,7 +88,7 @@ def register_view(request):
             # Show success message
             messages.success(request, "Account created successfully! You are now logged in.")
             # Redirect to the homepage
-            return redirect('homepage')
+            return redirect('profile')
         else:
             # Add error message if the form is not valid
             messages.error(request, "There was an error in your form. Please check the highlighted fields.")
@@ -136,6 +136,8 @@ def reserve_vehicle(request, vehicle_id):
     """
     View for reserving a vehicle.
     """
+    if not request.user.is_authenticated:
+        return redirect('login')
 
     vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
     # Fetch existing reservations for this vehicle
@@ -184,6 +186,9 @@ def reservation_list(request, renter_id):
 # Listing car for rent
 @login_required
 def list_car(request):
+    if not request.user.is_authenticated:
+        return redirect('login') 
+    
     if request.method == 'POST':
         make = request.POST['make']
         model = request.POST['model']
