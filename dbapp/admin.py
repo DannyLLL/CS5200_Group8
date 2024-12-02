@@ -1,14 +1,15 @@
 # dbapp/admin.py
 from django.contrib import admin
 from django.utils.html import format_html
+from django.contrib.auth.models import User
 from .models import (
-    Users, 
-    Vehicles, 
-    Reservations, 
-    Payments, 
-    Reviews, 
-    CarDelivery, 
-    VehicleFeatures, 
+    UserProfile,
+    Vehicles,
+    Reservations,
+    Payments,
+    Reviews,
+    CarDelivery,
+    VehicleFeatures,
     Notifications
 )
 
@@ -121,7 +122,10 @@ class ReviewAdmin(admin.ModelAdmin):
     review_preview.short_description = 'Review'
 
 # Register remaining models
-admin.site.register(Users)
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'first_name', 'last_name', 'phone_number', 'dateregistered')
+
 admin.site.register(CarDelivery)
 admin.site.register(VehicleFeatures)
 admin.site.register(Notifications)

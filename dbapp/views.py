@@ -1,24 +1,48 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView 
-from django.views.generic.edit import CreateView, UpdateView, DeleteView 
-from django.db import connection 
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Vehicles, Reservations
-from django.template.loader import get_template
-from django.template import TemplateDoesNotExist
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import Vehicles, Reservations, Users
+from .models import Vehicles, Reservations, UserProfile
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.utils import timezone
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
+from django.db import connection
+from django.views.decorators.csrf import csrf_exempt
+from .models import UserProfile
 
+# edit profile page
+@login_required
+def profile_view(request):
+    # Get or create UserProfile for the logged-in user
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
+    if request.method == 'POST':
+        # Extract the fields manually from the request.POST dictionary
+        user_profile.first_name = request.POST.get('first_name', user_profile.first_name)
+        user_profile.last_name = request.POST.get('last_name', user_profile.last_name)
+        user_profile.phone_number = request.POST.get('phone_number', user_profile.phone_number)
+        user_profile.address = request.POST.get('address', user_profile.address)
 
+        # Save the updated profile
+        user_profile.save()
+
+        # Show success message
+        messages.success(request, 'Your profile has been updated successfully.')
+        return redirect('profile')
+    else:
+        # Prepare the profile data for pre-filling the fields in the HTML template
+        context = {
+            'first_name': user_profile.first_name,
+            'last_name': user_profile.last_name,
+            'phone_number': user_profile.phone_number,
+            'address': user_profile.address,
+        }
+
+    return render(request, 'dbapp/profile.html', context)
 
 def is_admin(user):
     return user.is_superuser
@@ -50,6 +74,29 @@ def list_page(request):
     vehicles = Vehicles.objects.filter(isavailable=True)
     return render(request, 'dbapp/list_page.html', {'vehicles': vehicles})
 
+@csrf_exempt
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            # Save the user
+            user = form.save()
+            # Create a UserProfile linked to the new user
+            UserProfile.objects.create(user=user, dateregistered=timezone.now())
+            # Log in the user
+            login(request, user)
+            # Show success message
+            messages.success(request, "Account created successfully! You are now logged in.")
+            # Redirect to the homepage
+            return redirect('homepage')
+        else:
+            # Add error message if the form is not valid
+            messages.error(request, "There was an error in your form. Please check the highlighted fields.")
+            # The errors will be automatically passed to the form context
+    else:
+        form = UserCreationForm()
+    return render(request, 'dbapp/register.html', {'form': form})
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -59,48 +106,18 @@ def login_view(request):
             login(request, user)
             return redirect('homepage')
         else:
-            # Add error message handling here
             return render(request, 'dbapp/login.html', {'error': 'Invalid credentials'})
     return render(request, 'dbapp/login.html')
-
 
 def logout_view(request):
     logout(request)
     return redirect('homepage')
-
-
-def register_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password1']
-        password2 = request.POST['password2']
-        
-        if password != password2:
-            return render(request, 'dbapp/register.html', {'error': 'Passwords do not match'})
-            
-        # Create user in your Users table
-        user = Users.objects.create(
-            username=username,
-            email=email,
-            passwordhash=password,  # In production, you should hash this password
-            usertype='Renter',
-            dateregistered=timezone.now()
-        )
-        
-        return redirect('login')
-    return render(request, 'dbapp/register.html')
-
-
 
 def homepage(request):
     return render(request, 'dbapp/homepage.html')
 
 def test_view(request):
     return render(request, 'vehicle_list.html')
-
-
-
 
 def vehicle_list(request):
     vehicles = Vehicles.objects.filter(isavailable=True).order_by('-year')
@@ -115,13 +132,11 @@ def testmysql(request):
     """
     return render(request, 'dbapp/testmysql.html', {'message': 'Hello, Django!'})
 
-
-# Vehicle Reservation View
 def reserve_vehicle(request, vehicle_id):
     """
-    Placeholder View for reserving a vehicle.
-    This will allow users to reserve a specific vehicle once migrations are complete.
+    View for reserving a vehicle.
     """
+
     vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
     # Fetch existing reservations for this vehicle
     reservations = Reservations.objects.filter(vehicleid=vehicle).order_by('startdate')
@@ -150,6 +165,8 @@ def reserve_vehicle(request, vehicle_id):
             startdate=start_date,
             enddate=end_date,
             reservationstatus='Pending'  # Example default status
+
+
         )
         return redirect('vehicle_list') 
 
@@ -157,10 +174,9 @@ def reserve_vehicle(request, vehicle_id):
 
 
 
-# Optional Reservation List View
 def reservation_list(request, renter_id):
     """
-    Placeholder View for listing all reservations for a specific renter.
+    View for listing all reservations for a specific renter.
     """
     reservations = Reservations.objects.filter(renterid_id=renter_id)
     return render(request, 'reservation_list.html', {'reservations': reservations})
