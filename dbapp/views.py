@@ -208,7 +208,20 @@ def list_car(request):
             image=image
         )
         
-        return redirect('listing_rental_car')  # Redirect to the vehicle list page after listing
+        return redirect('manage_car')  # Redirect to the vehicle list page after listing
     
     return render(request, 'dbapp/listing_rental_car.html')
 
+def manage_car(request):
+    """
+    View to display the car management page.
+    """
+    if not request.user.is_authenticated:
+        # Redirect to login if the user is not authenticated
+        return redirect('login')  
+    
+    # Fetch all cars (or filter based on user if necessary)
+    cars = Vehicles.objects.filter(ownerid=request.user)
+
+    # Render the template and pass the list of cars as context
+    return render(request, 'dbapp/manage_car.html', {'list_page': cars})
