@@ -14,6 +14,18 @@
         <div>
           <h2 class="text-3xl font-bold text-center">Create Account</h2>
         </div>
+        
+        <!-- Display messages -->
+        {% if messages %}
+          <div class="mb-4">
+            {% for message in messages %}
+              <div class="p-4 mb-2 text-white rounded-lg {% if message.tags == 'error' %}bg-red-500{% elif message.tags == 'success' %}bg-green-500{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
         <form
           class="mt-8 space-y-6"
           method="POST"
@@ -21,40 +33,50 @@
         >
           {% csrf_token %}
           <div class="rounded-md shadow-sm -space-y-px">
+            <!-- Username Field -->
             <div>
               <input
+                type="text"
                 name="username"
-                required
+                id="id_username"
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Username"
-              />
-            </div>
-            <div>
-              <input
-                name="email"
-                type="email"
+                value="{{ form.username.value|default_if_none:'' }}"
                 required
-                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email"
               />
+              <div class="text-red-500 text-sm">
+                {{ form.username.errors }}
+              </div>
             </div>
+            
+            <!-- Password1 Field -->
             <div>
               <input
-                name="password1"
                 type="password"
-                required
+                name="password1"
+                id="id_password1"
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
+                required
               />
+              <div class="text-red-500 text-sm">
+                {{ form.password1.errors }}
+              </div>
             </div>
+            
+            <!-- Password2 Field -->
             <div>
               <input
-                name="password2"
                 type="password"
-                required
+                name="password2"
+                id="id_password2"
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Confirm Password"
+                required
               />
+              <div class="text-red-500 text-sm">
+                {{ form.password2.errors }}
+              </div>
             </div>
           </div>
 
