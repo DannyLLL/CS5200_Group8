@@ -15,7 +15,7 @@ class CarDelivery(models.Model):
     deliveryfee = models.DecimalField(db_column='DeliveryFee', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        # managed = False
         db_table = 'Car_Delivery'
 
 
@@ -27,7 +27,7 @@ class Notifications(models.Model):
     createdat = models.DateTimeField(db_column='CreatedAt')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        # managed = False
         db_table = 'Notifications'
 
 
@@ -39,7 +39,7 @@ class Payments(models.Model):
     paymentstatus = models.CharField(db_column='PaymentStatus', max_length=9, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        # managed = False
         db_table = 'Payments'
 
 
@@ -52,7 +52,7 @@ class Reservations(models.Model):
     reservationstatus = models.CharField(db_column='ReservationStatus', max_length=9, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        # managed = False
         db_table = 'Reservations'
 
 
@@ -65,7 +65,7 @@ class Reviews(models.Model):
     reviewtype = models.CharField(db_column='ReviewType', max_length=7)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        # managed = False
         db_table = 'Reviews'
 
 
@@ -78,7 +78,7 @@ class Users(models.Model):
     dateregistered = models.DateTimeField(db_column='DateRegistered')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        # managed = False
         db_table = 'Users'
 
 
@@ -89,7 +89,7 @@ class VehicleFeatures(models.Model):
     featurevalue = models.CharField(db_column='FeatureValue', max_length=50)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        # managed = False
         db_table = 'Vehicle_Features'
 
 
@@ -104,5 +104,5 @@ class Vehicles(models.Model):
     isavailable = models.IntegerField(db_column='IsAvailable', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        # managed = False
         db_table = 'Vehicles'
