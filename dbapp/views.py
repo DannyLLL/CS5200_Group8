@@ -184,6 +184,7 @@ def reservation_list(request, renter_id):
     return render(request, 'reservation_list.html', {'reservations': reservations})
 
 # Listing car for rent
+@login_required
 def list_car(request):
     if not request.user.is_authenticated:
         return redirect('login') 
@@ -194,16 +195,20 @@ def list_car(request):
         year = request.POST['year']
         price = request.POST['price']
         location = request.POST['location']
+        image = request.FILES.get('image')
         
-        # Save the car information
+        # Save the car information, setting the owner to the currently logged-in user
         Vehicles.objects.create(
             make=make,
             model=model,
             year=year,
             dailyrate=price,
             location=location,
-            isavailable=1  # Set car availability to true
+            isavailable=1,  # Set car availability to true
+            ownerid=request.user,  # Set the owner to the currently logged-in user
+            image=image
         )
+        
         return redirect('listing_rental_car')  # Redirect to the vehicle list page after listing
     
     return render(request, 'dbapp/listing_rental_car.html')
