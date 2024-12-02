@@ -18,4 +18,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'), #logout page
     path('register/', views.register_view, name='register'), #register page
     path('list/', views.list_page, name='list_page'), #list page
+    path('vehicle/add/', views.add_vehicle, name='add_vehicle'), #add vehicle
+    path('vehicle/delete/<int:vehicle_id>/', views.delete_vehicle, name='delete_vehicle'), #delete vehicle
 ]

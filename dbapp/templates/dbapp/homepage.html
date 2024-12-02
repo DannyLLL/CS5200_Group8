@@ -3,14 +3,22 @@
 <html>
   <head>
     <title>Car Rental System</title>
+    
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
   </head>
+   
   <body class="min-h-screen bg-slate-50">
     <!-- Hero Section -->
     <div class="bg-white border-b">
+       <!-- Background Image -->
+        <!-- <div class="absolute inset-0 z-0 overflow-hidden">
+            <img src="{% static 'dbapp/images/homepage1.jpg' %}" 
+                 alt="Luxury car background" 
+                 class="w-full h-full object-cover opacity-30">
+        </div> -->
       <div class="max-w-7xl mx-auto px-4 py-6">
         <div class="text-center py-16">
           <h1 class="text-4xl font-bold text-slate-900 mb-4">
@@ -39,6 +47,12 @@
 
     <!-- Features Section -->
     <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Second Image as a banner -->
+        <div class="mb-12 rounded-lg overflow-hidden shadow-lg">
+            <img src="{% static 'dbapp/images/homepage2.jpg' %}" 
+                 alt="Featured cars" 
+                 class="w-full h-64 object-cover">
+        </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Rent Card -->
         <div class="bg-white rounded-lg shadow-sm p-6 border">
