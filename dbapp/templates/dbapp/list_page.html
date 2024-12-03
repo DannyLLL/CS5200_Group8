@@ -19,6 +19,20 @@
           ← Back to Home
         </a>
       </div>
+      
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">
+          Available Vehicles
+        </h1>
+        {% if user.is_superuser %}
+        <a
+          href="{% url 'add_vehicle' %}"
+          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+        >
+          Add New Vehicle
+        </a>
+        {% endif %}
+      </div>
 
       <!-- Search and Filter Section -->
       <div class="bg-white rounded-lg shadow p-6 mb-8">
@@ -87,19 +101,7 @@
         </form>
     </div>
 
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold">
-          Available Vehicles
-        </h1>
-        {% if user.is_superuser %}
-        <a
-          href="{% url 'add_vehicle' %}"
-          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-        >
-          Add New Vehicle
-        </a>
-        {% endif %}
-      </div>
+
 
       <div
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"

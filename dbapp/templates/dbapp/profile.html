@@ -2,94 +2,157 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Page</title>
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
   </head>
-  <body class="bg-gray-50">
-    <div
-      class="container mx-auto my-8 p-6 bg-white rounded-lg shadow-md"
-    >
-      <h2 class="text-2xl font-bold mb-6">
-        Update Your Profile
-      </h2>
-
-      <form
-        method="POST"
-        action="{% url 'profile' %}"
-        class="space-y-4"
-      >
-        {% csrf_token %}
-
-        <div>
-          <label
-            for="first_name"
-            class="block text-gray-700"
-            >First Name:</label
-          >
-          <input
-            type="text"
-            id="first_name"
-            name="first_name"
-            value="{{ first_name }}"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <div>
-          <label for="last_name" class="block text-gray-700"
-            >Last Name:</label
-          >
-          <input
-            type="text"
-            id="last_name"
-            name="last_name"
-            value="{{ last_name }}"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <div>
-          <label
-            for="phone_number"
-            class="block text-gray-700"
-            >Phone Number:</label
-          >
-          <input
-            type="text"
-            id="phone_number"
-            name="phone_number"
-            value="{{ phone_number }}"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <div>
-          <label for="address" class="block text-gray-700"
-            >Address:</label
-          >
-          <input
-            type="text"
-            id="address"
-            name="address"
-            value="{{ address }}"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <button
-          type="submit"
-          class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-sm border-b">
+      <div class="max-w-4xl mx-auto px-4 py-4">
+        <a
+          href="{% url 'homepage' %}"
+          class="text-gray-600 hover:text-gray-900 flex items-center space-x-2"
         >
-          Save Changes
-        </button>
-      </form>
+          ← <span>Back to Home</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto my-8 px-4">
+      <!-- Profile Header -->
+      <div class="mb-8 text-center">
+        <div class="w-24 h-24 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <span class="text-3xl text-blue-600">
+            {% if first_name %}{{ first_name|first|upper }}{% else %}{{ user.username|first|upper }}{% endif %}
+          </span>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900">Update Your Profile</h1>
+        <p class="text-gray-600 mt-2">
+          Manage your personal information and preferences
+        </p>
+      </div>
+
+      <!-- Profile Form -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <form method="POST" action="{% url 'profile' %}" class="p-8">
+          {% csrf_token %}
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- First Name -->
+            <div class="space-y-2">
+              <label
+                for="first_name"
+                class="block text-sm font-medium text-gray-700"
+              >
+                First Name
+              </label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                value="{{ first_name }}"
+                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors"
+                placeholder="Enter your first name"
+              />
+            </div>
+
+            <!-- Last Name -->
+            <div class="space-y-2">
+              <label
+                for="last_name"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                value="{{ last_name }}"
+                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors"
+                placeholder="Enter your last name"
+              />
+            </div>
+
+            <!-- Phone Number -->
+            <div class="space-y-2">
+              <label
+                for="phone_number"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone_number"
+                name="phone_number"
+                value="{{ phone_number }}"
+                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors"
+                placeholder="Enter your phone number"
+              />
+            </div>
+
+            <!-- Address -->
+            <div class="space-y-2">
+              <label
+                for="address"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Address
+              </label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value="{{ address }}"
+                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors"
+                placeholder="Enter your address"
+              />
+            </div>
+          </div>
+
+          <!-- Save Button -->
+          <div class="mt-8 flex justify-end">
+            <button
+              type="submit"
+              class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Additional Profile Sections -->
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">
+            Recent Activity
+          </h2>
+          <div class="space-y-3 text-sm text-gray-600">
+            <p>• Last login: Today at 9:30 AM</p>
+            <p>• Profile updated: 3 days ago</p>
+            <p>• Last reservation: 1 week ago</p>
+          </div>
+        </div>
+
+        <!-- Account Status -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">
+            Account Status
+          </h2>
+          <div class="space-y-3 text-sm">
+            <p class="text-green-600">• Account verified</p>
+            <p class="text-gray-600">• Member since: January 2024</p>
+            <p class="text-blue-600">• Premium member</p>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
