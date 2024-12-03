@@ -15,8 +15,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
 
-
-# edit profile page
 @login_required
 def profile_view(request):
     # Get or create UserProfile for the logged-in user
@@ -35,14 +33,14 @@ def profile_view(request):
         # Show success message
         messages.success(request, 'Your profile has been updated successfully.')
         return redirect('homepage')
-    else:
-        # Prepare the profile data for pre-filling the fields in the HTML template
-        context = {
-            'first_name': user_profile.first_name,
-            'last_name': user_profile.last_name,
-            'phone_number': user_profile.phone_number,
-            'address': user_profile.address,
-        }
+
+    # Prepare the profile data with default values for None fields
+    context = {
+        'first_name': user_profile.first_name or '',  # Provide empty string if None
+        'last_name': user_profile.last_name or '',
+        'phone_number': user_profile.phone_number or '',
+        'address': user_profile.address or '',
+    }
 
     return render(request, 'dbapp/profile.html', context)
 
