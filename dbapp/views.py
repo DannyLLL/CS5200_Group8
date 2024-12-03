@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Vehicles, Reservations, UserProfile
+from .models import Vehicles, Reservations, UserProfile, VehicleFeatures
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
 from django.contrib.auth import login, authenticate, logout
@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+
 
 
 # edit profile page
@@ -71,9 +72,42 @@ def delete_vehicle(request, vehicle_id):
         vehicle.delete()
     return redirect('list_page')
 
+
+
 def list_page(request):
     vehicles = Vehicles.objects.all()
-    return render(request, 'dbapp/list_page.html', {'vehicles': vehicles})
+    # Search functionality
+    search_query = request.GET.get('search')
+    if search_query:
+        vehicles = vehicles.filter(
+            Q(make__icontains=search_query) |
+            Q(model__icontains=search_query)
+        )
+
+    # Make filter
+    make = request.GET.get('make')
+    if make:
+        vehicles = vehicles.filter(make=make)
+
+    # Location filter
+    location = request.GET.get('location')
+    if location:
+        vehicles = vehicles.filter(location=location)
+
+    # Price filter
+    max_price = request.GET.get('max_price')
+    if max_price:
+        vehicles = vehicles.filter(dailyrate__lte=max_price)
+
+    # Features filter
+    features = request.GET.getlist('features')
+    if features:
+        vehicles = vehicles.filter(vehiclefeatures__featurename__in=features).distinct()
+
+    return render(request, 'dbapp/list_page.html', {
+        'vehicles': vehicles,
+    })
+
 
 @csrf_exempt
 def register_view(request):
