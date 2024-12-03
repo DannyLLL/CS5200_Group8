@@ -56,20 +56,17 @@
           <div class="text-gray-600 mb-4">
             <p>Vehicle ID: {{ car.vehicleid }}</p>
             <p>Owner: {{ car.ownerid.username }}</p>
-            {% if car.isavailable %}
-            <p class="text-green-600">Available</p>
-            {% else %}
-            <p class="text-red-600">Not Available</p>
-            {% endif %}
           </div>
           <div class="space-y-2">
             <a
+               href="{% url 'edit_vehicle' car.vehicleid %}"
               class="block w-full text-center px-4 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-700"
             >
               Edit
             </a>
             <form
               method="POST"
+              action="{% url 'delete_vehicle' car.vehicleid %}"
               onsubmit="return confirm('Are you sure you want to delete this vehicle?');"
             >
               {% csrf_token %}
