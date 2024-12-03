@@ -198,8 +198,8 @@ def reserve_vehicle(request, vehicle_id):
                 'error': 'This vehicle is not available for the selected dates.'
             })
 
-        # Create reservation
-        Reservations.objects.create(
+        # Create reservation with status 'Pending'
+        reservation = Reservations.objects.create(
             vehicleid=vehicle,
             renterid=request.user,
             startdate=start_date,
@@ -207,8 +207,8 @@ def reserve_vehicle(request, vehicle_id):
             reservationstatus='Pending'  # Default status
         )
 
-        # Redirect to My Reservations page
-        return redirect('reservation_list')  # Ensure this is correct in `urls.py`
+        # Redirect to payment page
+        return redirect('payment', reservation_id=reservation.reservationid)
 
     return render(request, 'dbapp/reserve_vehicle.html', {'vehicle': vehicle, 'reservations': reservations})
 
@@ -277,3 +277,32 @@ def delete_reservation(request, reservation_id):
         return redirect('reservation_list')
 
     return render(request, 'dbapp/confirm_delete_reservation.html', {'reservation': reservation})
+
+@login_required
+def payment(request, reservation_id):
+    """
+    View for processing payment.
+    """
+    reservation = get_object_or_404(Reservations, reservationid=reservation_id, renterid=request.user)
+
+    if request.method == 'POST':
+        # Simulate payment processing
+        credit_card_name = request.POST['credit_card_name']
+        credit_card_number = request.POST['credit_card_number']
+        exp_date = request.POST['exp_date']
+        cvv = request.POST['cvv']
+        zip_code = request.POST['zip_code']
+
+        # (For the showcase, assume payment is always successful)
+        if credit_card_name and credit_card_number and exp_date and cvv and zip_code:
+            # Update reservation status to 'Confirmed'
+            reservation.reservationstatus = 'Confirmed'
+            reservation.save()
+
+            # Redirect to "My Reservations" page
+            messages.success(request, 'Payment successful! Your reservation is confirmed.')
+            return redirect('reservation_list')
+        else:
+            messages.error(request, 'Payment failed. Please check your details and try again.')
+
+    return render(request, 'dbapp/payment.html', {'reservation': reservation})
