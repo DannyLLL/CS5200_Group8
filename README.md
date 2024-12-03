@@ -10,5 +10,4 @@ Features:
   4. Booking System: Supports booking, cancelation, and modification of rentals.
   5. Real-time Availability Tracking: Ensures accurate updates on vehicle availability.
   6. Secure Payment Processing: Facilitates transactions between renters and vehicle owners.
-  7. Review and Rating: Allows users to leave feedback on cars and owners.
-  8. Notifications: Provides alerts for upcoming reservations and system updates.
+
