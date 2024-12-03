@@ -10,6 +10,27 @@
   </head>
   <body class="bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- Messages Section -->
+        {% if messages %}
+        <div class="mb-6">
+          {% for message in messages %}
+            {% if 'no-reserve' in message.tags %}
+            <div
+              class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
+              <strong class="font-bold">
+                {% if message.tags == 'error' %}Error:{% else %}Info:{% endif %}
+              </strong>
+              <span class="block sm:inline">{{ message }}</span>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+
+
       <!-- Add this navigation section at the top -->
       <div class="mb-6">
         <a
@@ -55,42 +76,52 @@
                 </select>
             </div>
 
-            <!-- Location Filter -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                <select name="location" class="w-full rounded-md border border-gray-300 px-3 py-2">
-                    <option value="">All Locations</option>
-                    <option value="San Jose" {% if request.GET.location == 'San Jose' %}selected{% endif %}>San Jose</option>
-                    <option value="Los Angeles" {% if request.GET.location == 'Los Angeles' %}selected{% endif %}>Los Angeles</option>
-                </select>
-            </div>
-
             <!-- Price Range -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Max Daily Rate</label>
-                <input type="number" name="max_price" placeholder="Max price" 
-                       value="{{ request.GET.max_price }}"
-                       class="w-full rounded-md border border-gray-300 px-3 py-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Min Daily Rate</label>
+              <input type="number" name="min_price" placeholder="Min price" 
+                    value="{{ request.GET.min_price }}"
+                    class="w-full rounded-md border border-gray-300 px-3 py-2 mb-4">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Max Daily Rate</label>
+              <input type="number" name="max_price" placeholder="Max price" 
+                    value="{{ request.GET.max_price }}"
+                    class="w-full rounded-md border border-gray-300 px-3 py-2">
             </div>
 
-            <!-- Features Filter -->
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Features</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="features" value="GPS" 
-                               {% if 'GPS' in request.GET.features %}checked{% endif %}
-                               class="rounded border-gray-300 text-blue-600">
-                        <span class="ml-2">GPS</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="features" value="Air Conditioning" 
-                               {% if 'Air Conditioning' in request.GET.features %}checked{% endif %}
-                               class="rounded border-gray-300 text-blue-600">
-                        <span class="ml-2">Air Conditioning</span>
-                    </label>
-                </div>
+            <!-- Reservation Date Range -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+              <input type="date" name="start_date" 
+                    value="{{ request.GET.start_date }}"
+                    class="w-full rounded-md border border-gray-300 px-3 py-2 mb-4">
             </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+              <input type="date" name="end_date" 
+                    value="{{ request.GET.end_date }}"
+                    class="w-full rounded-md border border-gray-300 px-3 py-2">
+            </div>
+
+            <!-- Location Filter -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <select name="location" class="w-full rounded-md border border-gray-300 px-3 py-2">
+                  <option value="">All Locations</option>
+                  <option value="San Jose" {% if request.GET.location == 'San Jose' %}selected{% endif %}>San Jose</option>
+                  <option value="Los Angeles" {% if request.GET.location == 'Los Angeles' %}selected{% endif %}>Los Angeles</option>
+              </select>
+            </div>
+
+              <!-- Reset Filters Button -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"> Reset Filter </label>
+                <a href="{% url 'list_page' %}" 
+                  class="w-full block rounded-md border border-gray-300 px-3 py-2 text-center bg-gray-100 hover:bg-gray-200 text-gray-700">
+                  Reset All
+                </a>
+              </div>
 
             <!-- Submit Button -->
             <div class="md:col-span-2 flex items-end">
@@ -127,12 +158,7 @@
           </p>
           <div class="text-gray-600 mb-4">
             <p>Vehicle ID: {{ vehicle.vehicleid }}</p>
-            <p>Owner: {{ vehicle.ownerid.username }}</p>
-            {% if vehicle.isavailable %}
-            <p class="text-green-600">Available</p>
-            {% else %}
-            <p class="text-red-600">Not Available</p>
-            {% endif %}
+            <p>Owner: {{ vehicle.ownerid.profile.first_name }} {{ vehicle.ownerid.profile.last_name }}</p>
           </div>
           <div class="space-y-2">
             <a

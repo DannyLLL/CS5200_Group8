@@ -13,6 +13,8 @@ from django.contrib import messages
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from django.contrib.messages import constants as messages_constants
+
 
 
 @login_required
@@ -63,7 +65,6 @@ def add_vehicle(request):
         return redirect('list_page')
     return render(request, 'dbapp/add_vehicle.html')
 
-@user_passes_test(is_admin)
 def delete_vehicle(request, vehicle_id):
     """
     Delete a vehicle and handle its reservations.
@@ -76,7 +77,7 @@ def delete_vehicle(request, vehicle_id):
         # Delete the vehicle
         vehicle.delete()
         messages.success(request, 'Vehicle and associated reservations have been deleted.')
-        return redirect('list_page')
+        return redirect('manage_car')
 
     return render(request, 'dbapp/confirm_delete_vehicle.html', {'vehicle': vehicle})
 
@@ -102,10 +103,23 @@ def list_page(request):
     if location:
         vehicles = vehicles.filter(location=location)
 
-    # Price filter
+    # Price range filters
+    min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
+    if min_price:
+        vehicles = vehicles.filter(dailyrate__gte=min_price)  # Minimum price filter
     if max_price:
-        vehicles = vehicles.filter(dailyrate__lte=max_price)
+        vehicles = vehicles.filter(dailyrate__lte=max_price)  # Maximum price filter
+
+    # Reservation date filters
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    if start_date and end_date:
+        # Exclude vehicles with overlapping reservations
+        vehicles = vehicles.exclude(
+            reservations__startdate__lt=end_date,
+            reservations__enddate__gt=start_date
+        )
 
     # Features filter
     features = request.GET.getlist('features')
@@ -181,6 +195,12 @@ def reserve_vehicle(request, vehicle_id):
     View for reserving a vehicle.
     """
     vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
+
+    # check if the current user is the owner
+    if vehicle.ownerid == request.user:
+        messages.error(request, "You cannot reserve your own car.", extra_tags='no-reserve')
+        return redirect('list_page')
+
     reservations = Reservations.objects.filter(vehicleid=vehicle).order_by('startdate')
 
     if request.method == 'POST':
@@ -306,3 +326,23 @@ def payment(request, reservation_id):
             messages.error(request, 'Payment failed. Please check your details and try again.')
 
     return render(request, 'dbapp/payment.html', {'reservation': reservation})
+
+
+@login_required
+def edit_vehicle(request, vehicle_id):
+    vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id, ownerid=request.user)
+
+    if request.method == 'POST':
+        # Update vehicle details from the form
+        vehicle.make = request.POST.get('make', vehicle.make)
+        vehicle.model = request.POST.get('model', vehicle.model)
+        vehicle.year = request.POST.get('year', vehicle.year)
+        vehicle.dailyrate = request.POST.get('dailyrate', vehicle.dailyrate)
+        vehicle.location = request.POST.get('location', vehicle.location)
+        vehicle.save()
+
+        messages.success(request, 'Vehicle details updated successfully.')
+        return redirect('manage_car')  # Redirect back to the car management page
+
+    # Render the edit form with the existing data pre-filled
+    return render(request, 'dbapp/edit_vehicle.html', {'vehicle': vehicle})
