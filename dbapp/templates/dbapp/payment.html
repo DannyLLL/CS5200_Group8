@@ -1,0 +1,33 @@
+{% extends "dbapp/base.html" %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<h2 class="text-xl font-semibold mb-4">Payment</h2>
+<p>Complete the payment for your reservation of <strong>{{ reservation.vehicleid.make }} {{ reservation.vehicleid.model }}</strong>.</p>
+
+<form method="post" class="mt-4 max-w-lg">
+    {% csrf_token %}
+    <div class="mb-4">
+        <label for="credit_card_name" class="block text-gray-700">Name on Card</label>
+        <input type="text" id="credit_card_name" name="credit_card_name" class="w-full border border-gray-300 rounded px-4 py-2" required>
+    </div>
+    <div class="mb-4">
+        <label for="credit_card_number" class="block text-gray-700">Card Number</label>
+        <input type="text" id="credit_card_number" name="credit_card_number" class="w-full border border-gray-300 rounded px-4 py-2" required>
+    </div>
+    <div class="mb-4">
+        <label for="exp_date" class="block text-gray-700">Expiration Date (MM/YY)</label>
+        <input type="text" id="exp_date" name="exp_date" class="w-full border border-gray-300 rounded px-4 py-2" required>
+    </div>
+    <div class="mb-4">
+        <label for="cvv" class="block text-gray-700">CVV</label>
+        <input type="text" id="cvv" name="cvv" class="w-full border border-gray-300 rounded px-4 py-2" required>
+    </div>
+    <div class="mb-4">
+        <label for="zip_code" class="block text-gray-700">ZIP Code</label>
+        <input type="text" id="zip_code" name="zip_code" class="w-full border border-gray-300 rounded px-4 py-2" required>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Pay Now</button>
+</form>
+{% endblock %}
