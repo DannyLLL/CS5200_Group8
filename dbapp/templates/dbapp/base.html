@@ -1,41 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Reservation System{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>
+      {% block title %}Reservation System{% endblock %}
+    </title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100">
     <!-- Navbar -->
     <header class="bg-blue-500 text-white shadow-lg p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-lg font-semibold">
-                <a href="{% url 'homepage' %}" class="hover:underline">Reservation System</a>
-            </h1>
-            <nav class="flex space-x-4">
-                <a href="{% url 'homepage' %}" class="hover:underline">Home</a>
-                <a href="{% url 'reservation_list' %}" class="hover:underline">My Reservations</a>
-                <a href="{% url 'list_page' %}" class="hover:underline">Vehicles</a>
-                {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="hover:underline">Logout</a>
-                {% else %}
-                <a href="{% url 'login' %}" class="hover:underline">Login</a>
-                <a href="{% url 'register' %}" class="hover:underline">Register</a>
-                {% endif %}
-            </nav>
-        </div>
+      <div
+        class="container mx-auto flex justify-between items-center"
+      >
+        <h1 class="text-lg font-semibold">
+          <a
+            href="{% url 'homepage' %}"
+            class="hover:underline"
+            >Reservation System</a
+          >
+        </h1>
+      </div>
     </header>
 
     <!-- Main Content -->
     <main class="container mx-auto p-6">
-        {% block content %}
-        {% endblock %}
+      {% block content %} {% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-300 text-center py-4">
-        <p>&copy; {{ year }} Reservation System. All Rights Reserved.</p>
+    <footer class="bg-white border-t mt-12">
+      <div class="max-w-7xl mx-auto px-4 py-6">
+        <p class="text-center text-slate-600">
+          © 2024 Car Rental System. All rights reserved.
+        </p>
+      </div>
     </footer>
-</body>
+  </body>
 </html>
