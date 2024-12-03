@@ -1,0 +1,11 @@
+{% extends "dbapp/base.html" %}
+
+{% block content %}
+<h2>Delete Vehicle</h2>
+<p>Are you sure you want to delete {{ vehicle.make }} {{ vehicle.model }} and all associated reservations?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="bg-red-500 text-white px-4 py-2">Delete</button>
+    <a href="{% url 'manage_car' %}" class="bg-gray-500 text-white px-4 py-2">Cancel</a>
+</form>
+{% endblock %}
