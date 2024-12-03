@@ -12,15 +12,25 @@
                 <th class="border border-gray-300 px-4 py-2">Start Date</th>
                 <th class="border border-gray-300 px-4 py-2">End Date</th>
                 <th class="border border-gray-300 px-4 py-2">Status</th>
+                <th class="border border-gray-300 px-4 py-2">Action</th> <!-- New column for the Delete button -->
             </tr>
         </thead>
         <tbody>
             {% for reservation in reservations %}
             <tr>
-                <td class="border border-gray-300 px-4 py-2">{{ reservation.vehicleid.make }} {{ reservation.vehicleid.model }}</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    {{ reservation.vehicleid.make }} {{ reservation.vehicleid.model }}
+                </td>
                 <td class="border border-gray-300 px-4 py-2">{{ reservation.startdate }}</td>
                 <td class="border border-gray-300 px-4 py-2">{{ reservation.enddate }}</td>
                 <td class="border border-gray-300 px-4 py-2">{{ reservation.reservationstatus }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-center">
+                    <!-- Add a link to delete the reservation -->
+                    <a href="{% url 'delete_reservation' reservation.reservationid %}" 
+                       class="text-red-500 hover:underline">
+                        Delete
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
