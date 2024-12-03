@@ -65,10 +65,20 @@ def add_vehicle(request):
 
 @user_passes_test(is_admin)
 def delete_vehicle(request, vehicle_id):
+    """
+    Delete a vehicle and handle its reservations.
+    """
+    vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
+
     if request.method == 'POST':
-        vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
+        # Delete associated reservations
+        Reservations.objects.filter(vehicleid=vehicle).delete()
+        # Delete the vehicle
         vehicle.delete()
-    return redirect('list_page')
+        messages.success(request, 'Vehicle and associated reservations have been deleted.')
+        return redirect('list_page')
+
+    return render(request, 'dbapp/confirm_delete_vehicle.html', {'vehicle': vehicle})
 
 
 
@@ -165,15 +175,12 @@ def testmysql(request):
     """
     return render(request, 'dbapp/testmysql.html', {'message': 'Hello, Django!'})
 
+@login_required
 def reserve_vehicle(request, vehicle_id):
     """
     View for reserving a vehicle.
     """
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     vehicle = get_object_or_404(Vehicles, vehicleid=vehicle_id)
-    # Fetch existing reservations for this vehicle
     reservations = Reservations.objects.filter(vehicleid=vehicle).order_by('startdate')
 
     if request.method == 'POST':
@@ -191,18 +198,17 @@ def reserve_vehicle(request, vehicle_id):
                 'error': 'This vehicle is not available for the selected dates.'
             })
 
-        # Create the reservation
+        # Create reservation
         Reservations.objects.create(
             vehicleid=vehicle,
             renterid=request.user,
             startdate=start_date,
             enddate=end_date,
-            reservationstatus='Pending'  #  default status
+            reservationstatus='Pending'  # Default status
         )
 
-
-        
-        return redirect('list_page') 
+        # Redirect to My Reservations page
+        return redirect('reservation_list')  # Ensure this is correct in `urls.py`
 
     return render(request, 'dbapp/reserve_vehicle.html', {'vehicle': vehicle, 'reservations': reservations})
 
@@ -210,9 +216,11 @@ def reserve_vehicle(request, vehicle_id):
 
 @login_required
 def reservation_list(request):
+    """
+    View for listing all reservations for the logged-in user.
+    """
     reservations = Reservations.objects.filter(renterid=request.user).select_related('vehicleid')
     return render(request, 'dbapp/reservation_list.html', {'reservations': reservations})
-
 # Listing car for rent
 def list_car(request):
     if not request.user.is_authenticated:
@@ -255,3 +263,17 @@ def manage_car(request):
 
     # Render the template and pass the list of cars as context
     return render(request, 'dbapp/manage_car.html', {'list_page': cars})
+
+@login_required
+def delete_reservation(request, reservation_id):
+    """
+    Delete a reservation for the logged-in user.
+    """
+    reservation = get_object_or_404(Reservations, reservationid=reservation_id, renterid=request.user)
+
+    if request.method == 'POST':
+        reservation.delete()
+        messages.success(request, 'Reservation has been deleted.')
+        return redirect('reservation_list')
+
+    return render(request, 'dbapp/confirm_delete_reservation.html', {'reservation': reservation})
