@@ -70,9 +70,10 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Make</label>
                 <select name="make" class="w-full rounded-md border border-gray-300 px-3 py-2">
-                    <option value="">All Makes</option>
-                    <option value="Mazda" {% if request.GET.make == 'Mazda' %}selected{% endif %}>Mazda</option>
-                    <option value="BMW" {% if request.GET.make == 'BMW' %}selected{% endif %}>BMW</option>
+                  <option value="">All Makes</option>
+                  {% for make in makes %}
+                  <option value="{{ make }}" {% if request.GET.make == make %}selected{% endif %}>{{ make }}</option>
+                  {% endfor %}
                 </select>
             </div>
 
@@ -104,15 +105,16 @@
                     class="w-full rounded-md border border-gray-300 px-3 py-2">
             </div>
 
-            <!-- Location Filter -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-              <select name="location" class="w-full rounded-md border border-gray-300 px-3 py-2">
-                  <option value="">All Locations</option>
-                  <option value="San Jose" {% if request.GET.location == 'San Jose' %}selected{% endif %}>San Jose</option>
-                  <option value="Los Angeles" {% if request.GET.location == 'Los Angeles' %}selected{% endif %}>Los Angeles</option>
-              </select>
-            </div>
+              <!-- Location Filter -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                <select name="location" class="w-full rounded-md border border-gray-300 px-3 py-2">
+                    <option value="">All Locations</option>
+                    {% for loc in locations %}
+                    <option value="{{ loc }}" {% if request.GET.location == loc %}selected{% endif %}>{{ loc }}</option>
+                    {% endfor %}
+                </select>
+              </div>
 
               <!-- Reset Filters Button -->
               <div>

@@ -50,9 +50,11 @@
                 class="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Locations</option>
-                <option value="San Jose">San Jose</option>
-                <option value="Los Angeles">Los Angeles</option>
+                {% for loc in locations %}
+                <option value="{{ loc }}" {% if request.GET.location == loc %}selected{% endif %}>{{ loc }}</option>
+                {% endfor %}
               </select>
+
 
               <!-- Search Button -->
               <button
@@ -131,7 +133,9 @@
         >
           <h2 class="text-xl font-semibold mb-2">Account Access</h2>
           {% if user.is_authenticated %}
-          <p class="text-gray-600 mb-4">Welcome back, {{ user.username }}!</p>
+          <p class="text-gray-600 mb-4">
+            Welcome back, {{ user.profile.first_name }} {{ user.profile.last_name }}!
+          </p>
           <!-- Profile Button -->
           <a
             href="{% url 'profile' %}"

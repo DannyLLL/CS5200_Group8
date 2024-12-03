@@ -77,7 +77,13 @@ def delete_vehicle(request, vehicle_id):
         # Delete the vehicle
         vehicle.delete()
         messages.success(request, 'Vehicle and associated reservations have been deleted.')
-        return redirect('manage_car')
+
+        # Redirect based on user type
+        if request.user.is_superuser:
+            return redirect('list_page')  # Admin redirection
+        else:
+            return redirect('manage_car')  # Regular user redirection
+
 
     return render(request, 'dbapp/confirm_delete_vehicle.html', {'vehicle': vehicle})
 
@@ -85,6 +91,13 @@ def delete_vehicle(request, vehicle_id):
 
 def list_page(request):
     vehicles = Vehicles.objects.all()
+
+    # Fetch make
+    makes = Vehicles.objects.values_list('make', flat=True).distinct()
+
+    # Fetch locations
+    locations = Vehicles.objects.values_list('location', flat=True).distinct()
+
     # Search functionality
     search_query = request.GET.get('search')
     if search_query:
@@ -128,6 +141,8 @@ def list_page(request):
 
     return render(request, 'dbapp/list_page.html', {
         'vehicles': vehicles,
+        'makes': makes,
+        'locations': locations,
     })
 
 
@@ -171,7 +186,13 @@ def logout_view(request):
     return redirect('homepage')
 
 def homepage(request):
-    return render(request, 'dbapp/homepage.html')
+    vehicles = Vehicles.objects.all()
+    locations = Vehicles.objects.values_list('location', flat=True).distinct()
+
+    return render(request, 'dbapp/homepage.html', {
+        'vehicles': vehicles,
+        'locations': locations,
+    })
 
 def test_view(request):
     return render(request, 'vehicle_list.html')
@@ -246,6 +267,9 @@ def list_car(request):
     if not request.user.is_authenticated:
         return redirect('login') 
     
+    if not request.user:
+        print("User is None")
+
     if request.method == 'POST':
         make = request.POST['make']
         model = request.POST['model']
@@ -279,6 +303,7 @@ def manage_car(request):
         return redirect('login')  
     
     # Fetch all cars (or filter based on user if necessary)
+
     cars = Vehicles.objects.filter(ownerid=request.user)
 
     # Render the template and pass the list of cars as context

@@ -55,7 +55,7 @@
           </p>
           <div class="text-gray-600 mb-4">
             <p>Vehicle ID: {{ car.vehicleid }}</p>
-            <p>Owner: {{ car.ownerid.username }}</p>
+            <p>Owner: {{ car.ownerid.profile.first_name }} {{ car.ownerid.profile.last_name }}</p>
           </div>
           <div class="space-y-2">
             <a
