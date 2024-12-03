@@ -208,12 +208,10 @@ def reserve_vehicle(request, vehicle_id):
 
 
 
-def reservation_list(request, renter_id):
-    """
-    View for listing all reservations for a specific renter.
-    """
-    reservations = Reservations.objects.filter(renterid_id=renter_id)
-    return render(request, 'reservation_list.html', {'reservations': reservations})
+@login_required
+def reservation_list(request):
+    reservations = Reservations.objects.filter(renterid=request.user).select_related('vehicleid')
+    return render(request, 'dbapp/reservation_list.html', {'reservations': reservations})
 
 # Listing car for rent
 def list_car(request):

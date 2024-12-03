@@ -14,7 +14,7 @@ urlpatterns = [
     #path('', views.vehicle_list, name='vehicle_list'),  # Default homepage showing vehicle list
 
     path('reserve/<int:vehicle_id>/', views.reserve_vehicle, name='reserve_vehicle'),  # Reserve a vehicle
-    path('reservations/<int:renter_id>/', views.reservation_list, name='reservation_list'),  # List renter's reservations
+    path('reservations/', views.reservation_list, name='reservation_list'), # List renter's reservations
     path('testmysql/', views.testmysql, name='testmysql'),  # Test database connection
 
     path('login/', views.login_view, name='login'), #login page
